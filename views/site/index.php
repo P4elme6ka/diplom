@@ -1,27 +1,33 @@
 <?php
 
-/** @var yii\web\View $this */
+/* @var yii\web\View $this
+ * @var \yii\data\SqlDataProvider $current_acceptance_provider
+ */
+
+
+use yii\helpers\Url;
 
 $this->title = 'Приемная комиссия';
 ?>
 <div class="site-index">
     <div class="body-content">
 
+        <h1>Список актуальных специальностей: </h1><br>
 
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Спциальность 09.02.07 "Информационные системы и программирование"</h5>
-                <p class="card-text">
-                    Специальность охватывает достаточно широкий спектр сфер профессиональной
-                    деятельности, что позволяет получить знания о безопасности информационных систем, техническом
-                    обслуживании и ремонте компьютеров, администрировании сетей, прикладном и системном
-                    программировании, WEB-дизайне и графическом моделировании объектов. Позволяет получить опыт в
-                    разработке и интеграции модулей программного обеспечения, администрировании баз данных,
-                    сопровождении программного обеспечения.
-                </p>
-                <p class="card-text"><small class="text-muted">Последние обновление 3 мин.</small></p>
-            </div>
-        </div>
+        <?php
+        if (count($current_acceptance_provider->getModels()) != 0){
+            foreach ($current_acceptance_provider->getModels() as $acceptance_group) { ?>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><?= $acceptance_group['name'] ?></h5>
+                        <p class="card-text"><?= $acceptance_group['description'] ?></p>
+                        <a href="<?= Url::to(['acceptanceclass/view', 'id' => $acceptance_group['id']]) ?>" class="card-link">Посмотреть рейтинги</a>
+                        <a href="<?= Url::to(['createacc']) ?>" class="card-link">Подать заявление</a>
+                        <p class="card-text"><small class="text-muted">Последние обновление <?= $acceptance_group["time"] ?></small></p>
+                    </div>
+                </div>
+            <? }
+        }?>
 
     </div>
 </div>

@@ -10,11 +10,12 @@ use Yii;
  * @property int $id
  * @property int $class_id
  * @property int $acceptance_id
- * @property int $document_set_id
+ * @property int|null $document_set_id
+ * @property string $name
+ * @property string $description
  *
  * @property Acceptance $acceptance
  * @property ClassGroup $class
- * @property DocumentSet|null $documentSet
  */
 class AcceptanceClass extends \yii\db\ActiveRecord
 {
@@ -32,11 +33,12 @@ class AcceptanceClass extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['class_id', 'acceptance_id'], 'required'],
+            [['class_id', 'acceptance_id', 'name', 'description'], 'required'],
             [['class_id', 'acceptance_id', 'document_set_id'], 'integer'],
+            [['description'], 'string'],
+            [['name'], 'string', 'max' => 255],
             [['acceptance_id'], 'exist', 'skipOnError' => true, 'targetClass' => Acceptance::class, 'targetAttribute' => ['acceptance_id' => 'id']],
             [['class_id'], 'exist', 'skipOnError' => true, 'targetClass' => ClassGroup::class, 'targetAttribute' => ['class_id' => 'id']],
-            [['document_set_id'], 'exist', 'skipOnError' => true, 'targetClass' => DocumentSet::class, 'targetAttribute' => ['document_set_id' => 'id']],
         ];
     }
 
@@ -50,6 +52,8 @@ class AcceptanceClass extends \yii\db\ActiveRecord
             'class_id' => 'Class ID',
             'acceptance_id' => 'Acceptance ID',
             'document_set_id' => 'Document Set ID',
+            'name' => 'Name',
+            'description' => 'Description',
         ];
     }
 
@@ -60,7 +64,7 @@ class AcceptanceClass extends \yii\db\ActiveRecord
      */
     public function getAcceptance()
     {
-        return $this->hasOne(Acceptance::class, ['id' => 'acceptance_id']);
+        return $this->hasOne(Acceptance::className(), ['id' => 'acceptance_id']);
     }
 
     /**
@@ -70,16 +74,6 @@ class AcceptanceClass extends \yii\db\ActiveRecord
      */
     public function getClass()
     {
-        return $this->hasOne(ClassGroup::class, ['id' => 'class_id']);
-    }
-
-    /**
-     * Gets query for [[DocumentSet]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getDocumentSet()
-    {
-        return $this->hasOne(DocumentSet::class, ['id' => 'document_set_id']);
+        return $this->hasOne(ClassGroup::className(), ['id' => 'class_id']);
     }
 }

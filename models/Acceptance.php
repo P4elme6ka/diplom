@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property int $year
+ * @property int $is_open
  *
  * @property AcceptanceClass[] $acceptanceClasses
  * @property User[] $users
@@ -29,8 +30,8 @@ class Acceptance extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['year'], 'required'],
-            [['year'], 'integer'],
+            [['year', 'is_open'], 'required'],
+            [['year', 'is_open'], 'integer'],
         ];
     }
 
@@ -42,6 +43,7 @@ class Acceptance extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'year' => 'Year',
+            'is_open' => 'Is Open',
         ];
     }
 

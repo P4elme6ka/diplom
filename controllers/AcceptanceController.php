@@ -3,22 +3,15 @@
 namespace app\controllers;
 
 use app\models\Acceptance;
-use app\models\AcceptanceClass;
-use app\models\ClassGroup;
-use app\models\ClassSearch;
-use app\models\CreateClassGroup;
-use yii\data\ActiveDataProvider;
-use yii\data\SqlDataProvider;
-use yii\filters\AccessControl;
-use yii\helpers\ArrayHelper;
+use app\models\AcceptanceSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * ClassController implements the CRUD actions for ClassGroup model.
+ * AcceptanceController implements the CRUD actions for Acceptance model.
  */
-class ClassController extends Controller
+class AcceptanceController extends Controller
 {
     /**
      * @inheritDoc
@@ -39,13 +32,13 @@ class ClassController extends Controller
     }
 
     /**
-     * Lists all ClassGroup models.
+     * Lists all Acceptance models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new ClassSearch();
+        $searchModel = new AcceptanceSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -55,54 +48,42 @@ class ClassController extends Controller
     }
 
     /**
-     * Displays a single ClassGroup model.
+     * Displays a single Acceptance model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
-        $model = $this->findModel($id);
-        $acceptanceProvider = new SqlDataProvider([
-            'sql' => 'SELECT class_group.name,acceptance.year,acceptance.id FROM `class_group` JOIN acceptance_class on class_group.id = acceptance_class.class_id JOIN acceptance on acceptance_class.acceptance_id = acceptance.id WHERE class_group.id = ' . $id
-        ]);
-
-        $studentProvider = new SqlDataProvider([
-            'sql' => 'SELECT * FROM `user` WHERE USER.class_id = ' . $id
-        ]);
-
         return $this->render('view', [
-            'model' => $model,
-            'acceptance' => $acceptanceProvider,
-            'students' => $studentProvider,
+            'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new ClassGroup model.
+     * Creates a new Acceptance model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $acceptance = Acceptance::find()->asArray()->all();
-        $acceptance = ArrayHelper::map($acceptance, 'id', 'year');
-        $model = new CreateClassGroup();
+        $model = new Acceptance();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['index']);
+                return $this->redirect(['view', 'id' => $model->id]);
             }
+        } else {
+            $model->loadDefaultValues();
         }
 
         return $this->render('create', [
             'model' => $model,
-            'acceptance' => $acceptance,
         ]);
     }
 
     /**
-     * Updates an existing ClassGroup model.
+     * Updates an existing Acceptance model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -122,7 +103,7 @@ class ClassController extends Controller
     }
 
     /**
-     * Deletes an existing ClassGroup model.
+     * Deletes an existing Acceptance model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -135,19 +116,47 @@ class ClassController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionOpen($id)
+    {
+        if ($this->countOpenedAcceptances() > 0) {
+            // TODO: error popup
+            return $this->redirect(['index']);
+        }
+
+        $model = $this->findModel($id);
+        $model->is_open = 1;
+        $model->save();
+
+        return $this->redirect(['view', 'id' => $id]);
+    }
+
+    public function actionClose($id)
+    {
+        $model = $this->findModel($id);
+        $model->is_open = 0;
+        $model->save();
+
+        return $this->redirect(['view', 'id' => $id]);
+    }
+
     /**
-     * Finds the ClassGroup model based on its primary key value.
+     * Finds the Acceptance model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return ClassGroup the loaded model
+     * @return Acceptance the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = ClassGroup::findOne(['id' => $id])) !== null) {
+        if (($model = Acceptance::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function countOpenedAcceptances()
+    {
+        return Acceptance::find()->where("is_open = 1")->count();
     }
 }

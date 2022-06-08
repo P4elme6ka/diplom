@@ -31,32 +31,39 @@ AppAsset::register($this);
         'brandLabel' => "Приемная комиссия Радиотехнического колледжа",
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+            'class' => 'navbar navbar-expand-md navbar-dark bg-dark',
         ],
     ]);
+
+    $items = [
+        ['label' => 'Домашняя', 'url' => ['/site/index']],
+    ];
+
+    if (Yii::$app->user->identity->role->name == "admin") {
+        $items[] = ['label' => 'Упрваление группами', 'url' => ['/class/index']];
+        $items[] = ['label' => 'Управление приемом', 'url' => ['/acceptance/index']];
+        $items[] = ['label' => 'Управление аккаунтами', 'url' => ['/user/index']];
+        $items[] = ['label' => 'Управление заявками', 'url' => ['/user/index']];
+
+    }
+
+    if (Yii::$app->user->isGuest) {
+        $items[] = ['label' => 'Войти', 'url' => ['/site/login']];
+        $items[] = ['label' => 'Зарегистрироваться', 'url' => ['/site/register']];
+    } else {
+        $items[] = '<li>'
+            . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
+            . Html::submitButton(
+                'Выйти (' . Yii::$app->user->identity->email . ')',
+                ['class' => 'btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>';
+    }
+
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
-        'items' => [
-            ['label' => 'Домашняя', 'url' => ['/site/index']],
-            ['label' => 'Зарегистрировать', 'url' => ['/site/register']],
-                        Yii::$app->user->identity->role->name == "user" ? (
-                ['label' => 'Список групп', 'url' => ['/class/index']]
-            ) : (
-                []
-            ),
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Войти', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
-                . Html::submitButton(
-                    'Выйти (' . Yii::$app->user->identity->email . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            ),
-        ],
+        'items' => $items,
     ]);
     NavBar::end();
     ?>

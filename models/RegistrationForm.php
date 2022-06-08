@@ -53,6 +53,7 @@ class RegistrationForm extends Model
         $user->city = $this->city;
         $user->public_status = '-';
 
+
 //        VarDumper::dump($user);die;
 
         $res = $user->save();

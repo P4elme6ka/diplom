@@ -2,23 +2,17 @@
 
 namespace app\controllers;
 
-use app\models\Acceptance;
-use app\models\AcceptanceClass;
-use app\models\ClassGroup;
-use app\models\ClassSearch;
-use app\models\CreateClassGroup;
-use yii\data\ActiveDataProvider;
-use yii\data\SqlDataProvider;
-use yii\filters\AccessControl;
-use yii\helpers\ArrayHelper;
+use app\models\User;
+use app\models\UserSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * ClassController implements the CRUD actions for ClassGroup model.
+ * UserController implements the CRUD actions for User model.
  */
-class ClassController extends Controller
+class UserController extends Controller
 {
     /**
      * @inheritDoc
@@ -38,14 +32,29 @@ class ClassController extends Controller
         );
     }
 
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        if (Yii::$app->user->identity->role->name != "admin") {
+            $this->redirect(['index']);
+            return false;
+        }
+        // other custom code here
+
+        return true; // or false to not run the action
+    }
+
     /**
-     * Lists all ClassGroup models.
+     * Lists all User models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new ClassSearch();
+        $searchModel = new UserSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -55,54 +64,42 @@ class ClassController extends Controller
     }
 
     /**
-     * Displays a single ClassGroup model.
+     * Displays a single User model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
-        $model = $this->findModel($id);
-        $acceptanceProvider = new SqlDataProvider([
-            'sql' => 'SELECT class_group.name,acceptance.year,acceptance.id FROM `class_group` JOIN acceptance_class on class_group.id = acceptance_class.class_id JOIN acceptance on acceptance_class.acceptance_id = acceptance.id WHERE class_group.id = ' . $id
-        ]);
-
-        $studentProvider = new SqlDataProvider([
-            'sql' => 'SELECT * FROM `user` WHERE USER.class_id = ' . $id
-        ]);
-
         return $this->render('view', [
-            'model' => $model,
-            'acceptance' => $acceptanceProvider,
-            'students' => $studentProvider,
+            'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new ClassGroup model.
+     * Creates a new User model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $acceptance = Acceptance::find()->asArray()->all();
-        $acceptance = ArrayHelper::map($acceptance, 'id', 'year');
-        $model = new CreateClassGroup();
+        $model = new User();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['index']);
+                return $this->redirect(['view', 'id' => $model->id]);
             }
+        } else {
+            $model->loadDefaultValues();
         }
 
         return $this->render('create', [
             'model' => $model,
-            'acceptance' => $acceptance,
         ]);
     }
 
     /**
-     * Updates an existing ClassGroup model.
+     * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -122,7 +119,7 @@ class ClassController extends Controller
     }
 
     /**
-     * Deletes an existing ClassGroup model.
+     * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -136,15 +133,15 @@ class ClassController extends Controller
     }
 
     /**
-     * Finds the ClassGroup model based on its primary key value.
+     * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return ClassGroup the loaded model
+     * @return User the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = ClassGroup::findOne(['id' => $id])) !== null) {
+        if (($model = User::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
