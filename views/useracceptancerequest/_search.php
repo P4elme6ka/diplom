@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\AcceptanceClassSearch */
+/* @var $model app\models\UserAcceptanceRequestSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="acceptance-class-search">
+<div class="user-acceptance-request-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -17,15 +17,15 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'class_id') ?>
+    <?= $form->field($model, 'date') ?>
 
-    <?= $form->field($model, 'acceptance_id') ?>
+    <?= $form->field($model, 'is_original') ?>
 
-    <?= $form->field($model, 'name') ?>
+    <?= $form->field($model, 'user_id') ?>
 
-    <?= $form->field($model, 'description') ?>
+    <?= $form->field($model, 'atestat_mean') ?>
 
-    <?php // echo $form->field($model, 'number_seats') ?>
+    <?php // echo $form->field($model, 'acceptance_class_id') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

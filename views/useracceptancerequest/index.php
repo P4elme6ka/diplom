@@ -3,23 +3,28 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
+use yii\helpers\VarDumper;
 use yii\widgets\ListView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\AcceptanceClassSearch */
+/* @var $searchModel app\models\UserAcceptanceRequestSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $userProvider yii\data\SqlDataProvider */
 
-$this->title = 'Открытые для поступления специальности';
+$this->title = 'User Acceptance Requests';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="acceptance-class-index">
+<div class="user-acceptance-request-index">
+
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+
     <?= ListView::widget([
-        'dataProvider' => $dataProvider,
+        'dataProvider' => $userProvider,
         'itemOptions' => ['class' => 'item'],
         'itemView' => function ($model, $key, $index, $widget) {
-            return Html::a(Html::encode($model->name), ['view', 'id' => $model->id]);
+            return Html::a(Html::encode($model['fio']), ['view', 'id' => $model['id']]);
         },
     ]) ?>
 

@@ -11,13 +11,15 @@ use yii\widgets\DetailView;
 
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Заявки на обучение по специальности'];
+$this->params['breadcrumbs'][] = ['label' => 'Список специальностей'];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="acceptance-class-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
+
+    <?= Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary mb-4']) ?>
 
     <?= DetailView::widget([
         'model' => $model,

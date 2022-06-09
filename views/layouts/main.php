@@ -43,7 +43,7 @@ AppAsset::register($this);
         $items[] = ['label' => 'Упрваление группами', 'url' => ['/class/index']];
         $items[] = ['label' => 'Управление приемом', 'url' => ['/acceptance/index']];
         $items[] = ['label' => 'Управление аккаунтами', 'url' => ['/user/index']];
-        $items[] = ['label' => 'Управление заявками', 'url' => ['/user/index']];
+        $items[] = ['label' => 'Управление заявками', 'url' => ['/useracceptancerequest/index']];
 
     }
 

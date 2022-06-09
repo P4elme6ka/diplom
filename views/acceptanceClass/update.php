@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\AcceptanceClass */
 
-$this->title = 'Update Acceptance Class: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Заявки на обучение по специальности'];
+$this->title = 'Обновить специальность: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Список специальностей'];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
