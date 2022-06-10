@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\UserAcceptanceRequest */
 
-$this->title = 'Update User Acceptance Request: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'User Acceptance Requests', 'url' => ['index']];
+$this->title = 'Обновление заявки абитуриента на обучение: ' . $model->user->fio;
+$this->params['breadcrumbs'][] = ['label' => 'Заявки абитуриентов на обучение', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>

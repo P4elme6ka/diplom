@@ -19,7 +19,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary mb-4']) ?>
+    <?php if (Yii::$app->user->identity->role->name == "admin") {
+        echo Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary mb-4']);
+    } ?>
 
     <?= DetailView::widget([
         'model' => $model,

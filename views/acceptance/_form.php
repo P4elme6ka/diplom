@@ -14,6 +14,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'year')->textInput()->label("Год приема") ?>
 
+    <?= $form->field($model, 'is_open')->textInput()->label("Открыть для приема документов") ?>
+
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>

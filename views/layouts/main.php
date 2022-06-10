@@ -40,11 +40,14 @@ AppAsset::register($this);
     ];
 
     if (Yii::$app->user->identity->role->name == "admin") {
-        $items[] = ['label' => 'Упрваление группами', 'url' => ['/class/index']];
         $items[] = ['label' => 'Управление приемом', 'url' => ['/acceptance/index']];
+        $items[] = ['label' => 'Управление направлениями', 'url' => ['/acceptanceclass/index']];
         $items[] = ['label' => 'Управление аккаунтами', 'url' => ['/user/index']];
         $items[] = ['label' => 'Управление заявками', 'url' => ['/useracceptancerequest/index']];
+    }
 
+    if (Yii::$app->user->identity->role->name == 'user'){
+        $items[] = ['label' => 'Управление заявками', 'url' => ['/useracceptancerequest/userindex']];
     }
 
     if (Yii::$app->user->isGuest) {

@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\AcceptanceClass */
 
-$this->title = 'Create Acceptance Class';
+$this->title = 'Создать направление для поступления';
 $this->params['breadcrumbs'][] = ['label' => 'Acceptance Classes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

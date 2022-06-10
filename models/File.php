@@ -10,7 +10,6 @@ use Yii;
  * @property int $id
  * @property string $name
  * @property string $path
- * @property string $type
  *
  * @property DocumentPreset[] $documentPresets
  */
@@ -30,8 +29,8 @@ class File extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'path', 'type'], 'required'],
-            [['name', 'path', 'type'], 'string', 'max' => 255],
+            [['name', 'path'], 'required'],
+            [['name', 'path'], 'string', 'max' => 255],
         ];
     }
 
@@ -44,7 +43,6 @@ class File extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'path' => 'Path',
-            'type' => 'Type',
         ];
     }
 

@@ -16,6 +16,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\RegistrationForm;
+use yii\web\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -91,7 +92,7 @@ class SiteController extends Controller
     }
 
     public function actionCreateacc(){
-        $group = AcceptanceClass::find()->asArray()->all();
+        $group = AcceptanceClass::findBySql("SELECT * FROM `acceptance_class` JOIN acceptance on acceptance_class.acceptance_id = acceptance.id WHERE acceptance.is_open = 1")->asArray()->all();
         $group = ArrayHelper::map($group, 'id', 'name');
         $model = new AcceptanceCreateForm();
 
@@ -99,8 +100,16 @@ class SiteController extends Controller
 
             $model->user_id = Yii::$app->user->identity->id;
 
+            $model->accept_attach = UploadedFile::getInstance($model, 'accept_attach');
+            $model->req_attach = UploadedFile::getInstance($model, 'req_attach');
+            $model->atetat_attach = UploadedFile::getInstance($model, 'atetat_attach');
+
+
             if ($model->save()) {
+                Yii::$app->getSession()->setFlash('success', "Заявка успешно создана");
                 return $this->redirect(['acceptanceclass/view', 'id' => $model->acceptance_class_id]);
+            } else {
+                Yii::$app->getSession()->setFlash('error', "Неопределенная ошибка");
             }
         }
 
@@ -123,7 +132,8 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            Yii::$app->getSession()->setFlash('error', "Неверная почта или пароль");
+            return $this->redirect(['index']);
         }
 
         $model->password = '';
@@ -155,20 +165,20 @@ class SiteController extends Controller
 
         if ($model->load(Yii::$app->request->post()) ) {
             if (!$model->validate()) {
-                Yii::$app->session->setFlash('fix the form');
+                Yii::$app->session->setFlash('error', 'Ошибка в заполнении формы');
 //                VarDumper::dump($model);die;
                 return $this->render('register', [
                     'model' => $model,
                 ]);
             }
             if (!$model->save()) {
-                Yii::$app->session->setFlash('some error on saving new user');
+                Yii::$app->session->setFlash('error', 'Произошла неизвестная ошибка');
 //                VarDumper::dump($model);die;
                 return $this->render('register', [
                     'model' => $model,
                 ]);
             }
-            Yii::$app->session->setFlash('successfully registered');
+            Yii::$app->session->setFlash('success', 'Пользователь успешно зарегистрирован');
             return $this->actionIndex();
         }
 

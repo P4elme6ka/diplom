@@ -11,7 +11,7 @@ use yii\widgets\ListView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $userProvider yii\data\SqlDataProvider */
 
-$this->title = 'User Acceptance Requests';
+$this->title = 'Заявки абитуриентов на обучение';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-acceptance-request-index">

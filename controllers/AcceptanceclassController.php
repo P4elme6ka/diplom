@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\AcceptanceClass;
 use app\models\AcceptanceClassSearch;
+use Yii;
 use yii\data\SqlDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -30,6 +31,16 @@ class AcceptanceclassController extends Controller
                 ],
             ]
         );
+    }
+
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        // other custom code here
+
+        return true; // or false to not run the action
     }
 
     /**
@@ -59,9 +70,16 @@ class AcceptanceclassController extends Controller
      */
     public function actionUpdate($id)
     {
+        if (Yii::$app->user->identity->role->name != "admin") {
+            Yii::$app->getSession()->setFlash('error', "Данному типу пользователя запрещен просмотр данного раздела");
+            $this->redirect(['site/index']);
+            return false;
+        }
+
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            Yii::$app->getSession()->setFlash('success', "Успешно изменино");
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -77,6 +95,12 @@ class AcceptanceclassController extends Controller
      */
     public function actionIndex()
     {
+        if (Yii::$app->user->identity->role->name != "admin") {
+            Yii::$app->getSession()->setFlash('error', "Данному типу пользователя запрещен просмотр данного раздела");
+            $this->redirect(['site/index']);
+            return false;
+        }
+
         $searchModel = new AcceptanceClassSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
@@ -93,6 +117,11 @@ class AcceptanceclassController extends Controller
      */
     public function actionCreate()
     {
+        if (Yii::$app->user->identity->role->name != "admin") {
+            $this->redirect(['site/index']);
+            return false;
+        }
+
         $model = new AcceptanceClass();
 
         if ($this->request->isPost) {
@@ -117,6 +146,11 @@ class AcceptanceclassController extends Controller
      */
     public function actionDelete($id)
     {
+        if (Yii::$app->user->identity->role->name != "admin") {
+            Yii::$app->getSession()->setFlash('error', "Данному типу пользователя запрещен просмотр данного раздела");
+            return $this->redirect(['site/index']);;
+        }
+
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

@@ -21,18 +21,19 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-lg-5">
 
             <?php $form = ActiveForm::begin([
-                'id' => 'contact-form'
+                'id' => 'contact-form',
+                'options' => ['enctype' => 'multipart/form-data']
             ]); ?>
 
             <?= $form->field($model, 'atestat_mean') ?>
 
             <?= $form->field($model, 'acceptance_class_id')->dropdownList($classes) ?>
 
-            <?= $form->field($model, 'req_attach') ?>
+            <?= $form->field($model, 'req_attach')->fileInput() ?>
 
-            <?= $form->field($model, 'accept_attach') ?>
+            <?= $form->field($model, 'accept_attach')->fileInput() ?>
 
-            <?= $form->field($model, 'atetat_attach') ?>
+            <?= $form->field($model, 'atetat_attach')->fileInput() ?>
 
             <div class="form-group">
                 <?= Html::submitButton('Отправить', ['class' => 'btn btn-primary', 'name' => 'contact-button']) ?>

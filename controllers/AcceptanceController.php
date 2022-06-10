@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Acceptance;
 use app\models\AcceptanceSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -29,6 +30,22 @@ class AcceptanceController extends Controller
                 ],
             ]
         );
+    }
+
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        if (Yii::$app->user->identity->role->name != "admin") {
+            Yii::$app->getSession()->setFlash('error', "Данному типу пользователя запрещен просмотр данного раздела");
+            $this->redirect(['index']);
+            return false;
+        }
+        // other custom code here
+
+        return true; // or false to not run the action
     }
 
     /**
@@ -71,10 +88,9 @@ class AcceptanceController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                Yii::$app->getSession()->setFlash('success', "Прием успешно создан");
                 return $this->redirect(['view', 'id' => $model->id]);
             }
-        } else {
-            $model->loadDefaultValues();
         }
 
         return $this->render('create', [
@@ -94,6 +110,7 @@ class AcceptanceController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            Yii::$app->getSession()->setFlash('success', "Успешно изменино");
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -119,14 +136,14 @@ class AcceptanceController extends Controller
     public function actionOpen($id)
     {
         if ($this->countOpenedAcceptances() > 0) {
-            // TODO: error popup
+            Yii::$app->getSession()->setFlash('error', "Нельзя открыть для приема более одного приема");
             return $this->redirect(['index']);
         }
 
         $model = $this->findModel($id);
         $model->is_open = 1;
         $model->save();
-
+        Yii::$app->getSession()->setFlash('error', "Прием успешно отрыт для получения заявок");
         return $this->redirect(['view', 'id' => $id]);
     }
 
@@ -136,6 +153,7 @@ class AcceptanceController extends Controller
         $model->is_open = 0;
         $model->save();
 
+        Yii::$app->getSession()->setFlash('error', "Прием успешно закрыт");
         return $this->redirect(['view', 'id' => $id]);
     }
 
@@ -152,7 +170,7 @@ class AcceptanceController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('Такой страницы не существует');
     }
 
     protected function countOpenedAcceptances()

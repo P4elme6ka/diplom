@@ -9,29 +9,46 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="user-acceptance-request-search">
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Поиск по фильтрам
+                    </button>
+                </h5>
+            </div>
 
-    <?php $form = ActiveForm::begin([
-        'action' => ['index'],
-        'method' => 'get',
-    ]); ?>
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    <?php $form = ActiveForm::begin([
+                        'action' => ['index'],
+                        'method' => 'get',
+                        'options' => [
+                            'class' => 'form-inline'
+                        ],
+                    ]); ?>
+                    <?= $form->field($model, 'date', [
+                        'template' => '<div class="mx-sm-3 mb-2">{label}</div><div class="mx-sm-3 mb-2">{input}</div><div class="mx-sm-3 mb-2">{error}</div>{hint}',
+                    ])->label("Дата подачи заявки: ") ?>
 
-    <?= $form->field($model, 'id') ?>
+                    <?= $form->field($model, 'is_original', [
+                        'template' => '<div class="mx-sm-3 mb-2">{label}</div><div class="mx-sm-3 mb-2">{input}</div><div class="mx-sm-3 mb-2">{error}</div>{hint}',
+                    ])->label("Оригинал: ") ?>
 
-    <?= $form->field($model, 'date') ?>
+                    <?= $form->field($model, 'user_id', [
+                        'template' => '<div class="mx-sm-3 mb-2">{label}</div><div class="mx-sm-3 mb-2">{input}</div><div class="mx-sm-3 mb-2">{error}</div>{hint}',
+                    ])->label("Пользователь: ") ?>
 
-    <?= $form->field($model, 'is_original') ?>
 
-    <?= $form->field($model, 'user_id') ?>
+                    <div class="form-group">
+                        <?= Html::submitButton('Поиск', ['class' => 'btn btn-primary mx-sm-3 mb-2']) ?>
+                        <?= Html::resetButton('Сбросить фильтры', ['class' => 'btn btn-outline-secondary mx-sm-3 mb-2']) ?>
+                    </div>
 
-    <?= $form->field($model, 'atestat_mean') ?>
-
-    <?php // echo $form->field($model, 'acceptance_class_id') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+                    <?php ActiveForm::end(); ?>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

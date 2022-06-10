@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\UserAcceptanceRequest;
 use app\models\UserAcceptanceRequestSearch;
+use Yii;
 use yii\data\SqlDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -32,6 +33,29 @@ class UseracceptancerequestController extends Controller
         );
     }
 
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        // other custom code here
+
+        return true; // or false to not run the action
+    }
+
+
+    public function actionUserindex()
+    {
+        $dataProvider = new SqlDataProvider([
+            'sql' => 'SELECT date,atestat_mean,acceptance_class_id,name,description FROM `user_acceptance_request` JOIN acceptance_class on user_acceptance_request.acceptance_class_id = acceptance_class.id WHERE user_id = ' . Yii::$app->user->identity->id,
+        ]);
+
+        return $this->render('userindex', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     /**
      * Lists all UserAcceptanceRequest models.
      *
@@ -39,6 +63,12 @@ class UseracceptancerequestController extends Controller
      */
     public function actionIndex()
     {
+        if (Yii::$app->user->identity->role->name != "admin") {
+            Yii::$app->getSession()->setFlash('error', "Данному типу пользователя запрещен просмотр данного раздела");
+            $this->redirect(['site/index']);
+            return false;
+        }
+
         $searchModel = new UserAcceptanceRequestSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
@@ -60,15 +90,19 @@ class UseracceptancerequestController extends Controller
      */
     public function actionSetoriginal($id)
     {
+        if (Yii::$app->user->identity->role->name != "admin") {
+            Yii::$app->getSession()->setFlash('error', "Данному типу пользователя запрещен просмотр данного раздела");
+            $this->redirect(['site/index']);
+            return false;
+        }
+
         $model = UserAcceptanceRequest::findOne(['id' => $id]);
 
-        $usersProvider = new SqlDataProvider([
-            'sql' => 'SELECT user_acceptance_request.id,user.fio,user_acceptance_request.date,user.phone,user.email FROM `user_acceptance_request` JOIN user ON user_acceptance_request.user_id = user.id'
-        ]);
+        $model->is_original = 1;
 
-        return $this->render('index', [
-            'model' => $model,
-        ]);
+        $model->save();
+
+        return $this->redirect(['view', 'id' => $id]);
     }
 
     /**
@@ -79,6 +113,10 @@ class UseracceptancerequestController extends Controller
      */
     public function actionView($id)
     {
+        $attachmentProvider = new SqlDataProvider([
+            'sql' => '',
+        ]);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -91,6 +129,11 @@ class UseracceptancerequestController extends Controller
      */
     public function actionCreate()
     {
+        if (Yii::$app->user->identity->role->name != "admin") {
+            $this->redirect(['site/index']);
+            return false;
+        }
+
         $model = new UserAcceptanceRequest();
 
         if ($this->request->isPost) {
@@ -107,26 +150,6 @@ class UseracceptancerequestController extends Controller
     }
 
     /**
-     * Updates an existing UserAcceptanceRequest model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
      * Deletes an existing UserAcceptanceRequest model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
@@ -135,6 +158,12 @@ class UseracceptancerequestController extends Controller
      */
     public function actionDelete($id)
     {
+        if (Yii::$app->user->identity->role->name != "admin") {
+            Yii::$app->getSession()->setFlash('error', "Данному типу пользователя запрещен просмотр данного раздела");
+            $this->redirect(['site/index']);
+            return false;
+        }
+
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

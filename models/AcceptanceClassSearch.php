@@ -17,7 +17,7 @@ class AcceptanceClassSearch extends AcceptanceClass
     public function rules()
     {
         return [
-            [['id', 'class_id', 'acceptance_id', 'number_seats'], 'integer'],
+            [['id', 'acceptance_id', 'number_seats'], 'integer'],
             [['name', 'description'], 'safe'],
         ];
     }
@@ -59,7 +59,6 @@ class AcceptanceClassSearch extends AcceptanceClass
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'class_id' => $this->class_id,
             'acceptance_id' => $this->acceptance_id,
             'number_seats' => $this->number_seats,
         ]);
