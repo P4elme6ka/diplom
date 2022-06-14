@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
+/* @var $items array */
 /* @var $model app\models\AcceptanceClass */
 /* @var $form yii\widgets\ActiveForm */
 ?>
@@ -12,7 +13,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'acceptance_id')->textInput() ?>
+    <?= $form->field($model, 'acceptance_id')->dropDownList($items) ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 

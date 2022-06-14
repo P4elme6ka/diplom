@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $userProvider,
         'itemOptions' => ['class' => 'item'],
         'itemView' => function ($model, $key, $index, $widget) {
-            return Html::a(Html::encode($model['fio']), ['view', 'id' => $model['id']]);
+            return Html::a(Html::encode($model['fio']) . " - " . Html::encode($model['name']) , ['view', 'id' => $model['id']]);
         },
     ]) ?>
 

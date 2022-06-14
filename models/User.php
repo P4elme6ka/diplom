@@ -18,7 +18,6 @@ use yii\web\IdentityInterface;
  * @property int|null $age
  * @property string|null $city
  * @property int $status_id
- * @property int|null $acceptance_id
  * @property string $access_token
  * @property string $password
  * @property string fio
@@ -43,12 +42,11 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['role_id', 'email', 'public_status', 'status_id', 'acceptance_id'], 'required'],
-            [['role_id', 'phone', 'age', 'status_id', 'acceptance_id'], 'integer'],
+            [['role_id', 'email', 'public_status', 'status_id'], 'required'],
+            [['role_id', 'phone', 'age', 'status_id'], 'integer'],
             [['public_status'], 'string'],
             [['email', 'city'], 'string', 'max' => 255],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => Status::class, 'targetAttribute' => ['status_id' => 'id']],
-            [['acceptance_id'], 'exist', 'skipOnError' => true, 'targetClass' => Acceptance::class, 'targetAttribute' => ['acceptance_id' => 'id']],
             [['role_id'], 'exist', 'skipOnError' => true, 'targetClass' => Role::class, 'targetAttribute' => ['role_id' => 'id']],
         ];
     }

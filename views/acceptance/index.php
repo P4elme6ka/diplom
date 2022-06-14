@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'itemOptions' => ['class' => 'item'],
         'itemView' => function ($model, $key, $index, $widget) {
-            return Html::a(Html::encode($model->year), ['view', 'id' => $model->id]);
+            return Html::a('Прием - ' . Html::encode($model->year), ['view', 'id' => $model->id]);
         },
     ]) ?>
 

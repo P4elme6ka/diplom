@@ -1,5 +1,6 @@
 <?php
 
+use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -18,12 +19,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?= ListView::widget([
+    <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'itemOptions' => ['class' => 'item'],
-        'itemView' => function ($model, $key, $index, $widget) {
-            return Html::a(Html::encode($model->fio), ['view', 'id' => $model->id]);
-        },
+        'columns' => [
+            'phone',
+            'email',
+            'age',
+            'fio',
+            [
+                'class' => ActionColumn::class,
+                'urlCreator' => function ($action, $model, $key, $index, $column) {
+                    return Url::toRoute([$action, 'id' => $model->id]);
+                }
+            ],
+        ]
+//        'itemOptions' => ['class' => 'item'],
+//        'itemView' => function ($model, $key, $index, $widget) {
+//            return Html::a(Html::encode($model->fio . " " . $model->email . " " . $model->phone), ['view', 'id' => $model->id]);
+//        },
     ]) ?>
 
 

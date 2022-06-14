@@ -28,7 +28,7 @@ AppAsset::register($this);
 <header>
     <?php
     NavBar::begin([
-        'brandLabel' => "Приемная комиссия Радиотехнического колледжа",
+        'brandLabel' => "Приемная комиссия",
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar navbar-expand-md navbar-dark bg-dark',

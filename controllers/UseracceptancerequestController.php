@@ -73,7 +73,7 @@ class UseracceptancerequestController extends Controller
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         $usersProvider = new SqlDataProvider([
-           'sql' => 'SELECT user_acceptance_request.id,user.fio,user_acceptance_request.date,user.phone,user.email FROM `user_acceptance_request` JOIN user ON user_acceptance_request.user_id = user.id'
+           'sql' => 'SELECT user_acceptance_request.id,user.fio,user_acceptance_request.date,user.phone,user.email,acceptance_class.name,acceptance_class.description FROM `user_acceptance_request` JOIN user ON user_acceptance_request.user_id = user.id JOIN acceptance_class ON user_acceptance_request.acceptance_class_id = acceptance_class.id'
         ]);
 
         return $this->render('index', [
@@ -158,12 +158,6 @@ class UseracceptancerequestController extends Controller
      */
     public function actionDelete($id)
     {
-        if (Yii::$app->user->identity->role->name != "admin") {
-            Yii::$app->getSession()->setFlash('error', "Данному типу пользователя запрещен просмотр данного раздела");
-            $this->redirect(['site/index']);
-            return false;
-        }
-
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

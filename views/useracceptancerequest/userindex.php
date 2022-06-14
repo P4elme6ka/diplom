@@ -18,9 +18,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'itemOptions' => ['class' => 'item'],
         'itemView' => function ($model, $key, $index, $widget) {
-            return Html::a(Html::encode($model['name']));
+            return '  <div class="card">
+                          <h5 class="card-header">' . $model["name"] . '</h5>
+                          <div class="card-body">
+                            <h5 class="card-title">Заявка от ' . $model["date"] . '</h5>
+                            <p class="card-text">' . $model["description"] . '</p>
+                            <a href="' . Url::toRoute(["useracceptancerequest/view", "id" => $model["id"]]) . '" class="btn btn-primary">Перейти к редактированию заявки</a>
+                          </div>
+                    </div>';
+            // Html::a(Html::encode($model['name']));
         },
     ]) ?>
-
+<!-- user_acceptance_request.id,user.fio,user_acceptance_request.date,user.phone,user.email,acceptance_class.name -->
 
 </div>

@@ -136,14 +136,14 @@ class AcceptanceController extends Controller
     public function actionOpen($id)
     {
         if ($this->countOpenedAcceptances() > 0) {
-            Yii::$app->getSession()->setFlash('error', "Нельзя открыть для приема более одного приема");
+            Yii::$app->getSession()->setFlash('success', "Нельзя открыть для приема более одного приема");
             return $this->redirect(['index']);
         }
 
         $model = $this->findModel($id);
         $model->is_open = 1;
         $model->save();
-        Yii::$app->getSession()->setFlash('error', "Прием успешно отрыт для получения заявок");
+        Yii::$app->getSession()->setFlash('success', "Прием успешно отрыт для получения заявок");
         return $this->redirect(['view', 'id' => $id]);
     }
 

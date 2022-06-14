@@ -46,7 +46,6 @@ class RegistrationForm extends Model
         $user->role_id = 1;
         $user->fio = $this->fio;
         $user->status_id = 1;
-        $user->acceptance_id = 1;
         $user->email = $this->email;
         $user->age = $this->age;
         $user->phone = $this->phone;

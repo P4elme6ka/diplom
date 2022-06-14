@@ -11,7 +11,7 @@ use yii\widgets\DetailView;
 
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Список специальностей'];
+$this->params['breadcrumbs'][] = ['label' => 'Специальности'];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>

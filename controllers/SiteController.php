@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\AcceptanceClass;
 use app\models\AcceptanceCreateForm;
 use app\models\ClassGroup;
+use app\models\UserAcceptanceRequest;
 use Yii;
 use yii\bootstrap4\ActiveForm;
 use yii\data\SqlDataProvider;
@@ -92,9 +93,26 @@ class SiteController extends Controller
     }
 
     public function actionCreateacc(){
-        $group = AcceptanceClass::findBySql("SELECT * FROM `acceptance_class` JOIN acceptance on acceptance_class.acceptance_id = acceptance.id WHERE acceptance.is_open = 1")->asArray()->all();
+        $acc_count = UserAcceptanceRequest::findBySql(" SELECT user_acceptance_request.id FROM `user_acceptance_request` 
+                                                            JOIN acceptance_class ON acceptance_class.id = user_acceptance_request.acceptance_class_id
+                                                            JOIN acceptance ON acceptance_class.acceptance_id = acceptance.id
+                                                            where acceptance.year = (
+                                                                SELECT year from acceptance 
+                                                                WHERE acceptance.is_open = 1 
+                                                                ORDER BY acceptance.year DESC
+                                                                LIMIT 1
+                                                            ) AND 
+                                                            user_acceptance_request.user_id = " . Yii::$app->user->id);
+
+
+        $group = AcceptanceClass::findBySql("SELECT acceptance_class.id,acceptance_class.name FROM `acceptance_class` JOIN acceptance on acceptance_class.acceptance_id = acceptance.id WHERE acceptance.is_open = 1")->asArray()->all();
         $group = ArrayHelper::map($group, 'id', 'name');
         $model = new AcceptanceCreateForm();
+
+        if ($acc_count->count() >= 3) {
+            Yii::$app->session->setFlash("error", "У вас уже имеется 3 активных заявки на обучение в текщем пиреме");
+            return $this->redirect(['useracceptancerequest/userindex']);
+        }
 
         if ($model->load(Yii::$app->request->post())) {
 
@@ -131,9 +149,12 @@ class SiteController extends Controller
         }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            Yii::$app->getSession()->setFlash('error', "Неверная почта или пароль");
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->login()) {
+                return $this->redirect(['index']);
+            } else {
+                Yii::$app->getSession()->setFlash('error', "Неверная почта или пароль");
+            }
         }
 
         $model->password = '';

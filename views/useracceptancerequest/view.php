@@ -16,10 +16,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Принять оригиналы документов', ['setoriginal', 'id' => $model->id], [
-                'class' => 'btn btn-primary',
-            ]) ?>
-        <?= Html::a('Обновить заявку', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?php if (Yii::$app->user->identity->role->name == "admin") { ?>
+            <?= Html::a('Принять оригиналы документов', ['setoriginal', 'id' => $model->id], [
+                    'class' => 'btn btn-primary',
+                ]) ?>
+            <?= Html::a('Обновить заявку', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?php } ?>
         <?= Html::a('Удалить завявку', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [

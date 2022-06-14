@@ -2,10 +2,12 @@
 
 namespace app\controllers;
 
+use app\models\Acceptance;
 use app\models\AcceptanceClass;
 use app\models\AcceptanceClassSearch;
 use Yii;
 use yii\data\SqlDataProvider;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -101,11 +103,11 @@ class AcceptanceclassController extends Controller
             return false;
         }
 
-        $searchModel = new AcceptanceClassSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider = new SqlDataProvider([
+            'sql' => "SELECT acceptance_class.name,acceptance_class.id,acceptance.year from acceptance_class JOIN acceptance ON acceptance_class.acceptance_id = acceptance.id",
+        ]);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -122,6 +124,9 @@ class AcceptanceclassController extends Controller
             return false;
         }
 
+        $items = Acceptance::find()->all();
+        $items = ArrayHelper::map($items, 'id', 'year');
+
         $model = new AcceptanceClass();
 
         if ($this->request->isPost) {
@@ -134,6 +139,7 @@ class AcceptanceclassController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'items' => $items,
         ]);
     }
 
