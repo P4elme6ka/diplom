@@ -1,10 +1,13 @@
 <?php
 
+use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\UserAcceptanceRequest */
+/* @var $attachment \yii\data\SqlDataProvider */
 
 $this->title = $model->user->fio;
 $this->params['breadcrumbs'][] = ['label' => 'Заявки абитуриентов на обучение', 'url' => ['index']];
@@ -41,6 +44,23 @@ $this->params['breadcrumbs'][] = $this->title;
             'atestat_mean',
             'acceptance_class_id',
         ],
+    ]) ?>
+
+    <?= GridView::widget([
+        'dataProvider' => $attachment,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+            [
+                'label' => 'Название файла',
+                'attribute' => 'name',
+            ],
+            [
+                'label' => 'Ссылка для скачивания',
+                'attribute' => 'path',
+                'format' => 'url',
+                'value' => function($data) { return  Url::base(true) . '/' . $data['path']; },
+            ],
+        ]
     ]) ?>
 
 </div>

@@ -114,11 +114,15 @@ class UseracceptancerequestController extends Controller
     public function actionView($id)
     {
         $attachmentProvider = new SqlDataProvider([
-            'sql' => '',
+            'sql' => '  SELECT file.name,file.path FROM `user_acceptance_request` 
+                        JOIN user_acceptance_attachment ON user_acceptance_attachment.user_request_id = user_acceptance_request.id
+                        JOIN file ON file.id = user_acceptance_attachment.file_id
+                        WHERE user_acceptance_request.id = 2',
         ]);
 
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'attachment' => $attachmentProvider,
         ]);
     }
 
